@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        fsGroup: 101
+      containers:
+      - name: nginx
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+        - name: var-cache-volume
+          mountPath: /var/cache/nginx
+        - name: var-run-volume
+          mountPath: /var/run
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: var-cache-volume
+        emptyDir: {}
+      - name: var-run-volume
+        emptyDir: {}
