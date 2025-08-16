@@ -22,7 +22,7 @@ spec:
       - name: api
         image: node:18-alpine
         command: ["node"]
-        args: ["-e", "const express = require('express'); const app = express(); app.get('/health', (req, res) => res.json({status: 'healthy', env: process.env.NODE_ENV})); app.listen(3000, () => console.log('API running on port 3000'));"]
+        args: ["-e", "const http = require('http'); const server = http.createServer((req, res) => { if (req.url === '/health') { res.writeHead(200, {'Content-Type': 'application/json'}); res.end(JSON.stringify({status: 'healthy', env: process.env.NODE_ENV || 'development'})); } else { res.writeHead(404); res.end('Not Found'); } }); server.listen(3000, () => console.log('API running on port 3000'));"]
         ports:
         - containerPort: 3000
           name: http
@@ -35,16 +35,4 @@ spec:
           requests:
             memory: "128Mi"
             cpu: "250m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 5
+          limit
