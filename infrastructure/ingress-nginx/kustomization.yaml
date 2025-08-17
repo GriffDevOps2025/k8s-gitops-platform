@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ingress-controller.yaml
+  - ingress-routes.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: k8s-gitops-platform
+  app.kubernetes.io/component: ingress
+  app.kubernetes.io/managed-by: argocd
